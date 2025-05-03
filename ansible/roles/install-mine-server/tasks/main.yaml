@@ -1,0 +1,54 @@
+---
+- name: Ensure 'unzip' is installed
+  apt:
+    name: unzip
+    state: present
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Delete old directory if exists
+  become: true
+  file:
+    path: "{{ base_directory }}"
+    state: directory
+    state: absent
+  when: override_old_installation
+
+- name: Create base directory
+  file:
+    path: "{{ base_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Download Minecraft Bedrock server zip
+  get_url:
+    url: "https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-{{ server_version }}.zip"
+    dest: "{{ base_directory }}/bedrock-server.zip"
+
+- name: Unzip Minecraft Bedrock server
+  unarchive:
+    src: "{{ base_directory }}/bedrock-server.zip"
+    dest: "{{ base_directory }}"
+    remote_src: yes
+
+- name: Remove the zip file
+  file:
+    path: "{{ base_directory }}/bedrock-server.zip"
+    state: absent
+
+- name: Create config file
+  ansible.builtin.template:
+    src: ./templates/server.properties.j2
+    dest: "{{ base_directory }}/server.properties"
+    owner: ubuntu
+    group: ubuntu
+    mode: '644'
+
+- name: Create systemd file
+  become: true
+  ansible.builtin.template:
+    src: ./templates/minecraft-server.service.j2
+    dest: /etc/systemd/system/minecraft-server.service
+    owner: root
+    group: root
+    mode: '644'

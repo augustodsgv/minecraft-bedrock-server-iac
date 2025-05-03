@@ -1,0 +1,6 @@
+- name: Run server
+  ansible.builtin.systemd_service:
+    state: started
+    name: minecraft-server
+    enabled: true
+    daemon_reload: true

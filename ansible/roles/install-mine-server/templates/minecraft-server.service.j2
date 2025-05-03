@@ -1,0 +1,15 @@
+[Unit]
+Description=Minecraft Bedrock Server
+After=network.target
+
+[Service]
+WorkingDirectory={{ base_directory }}
+ExecStart=/bin/bash -c 'LD_LIBRARY_PATH=. ./bedrock_server'
+Restart=always
+Use=Minecraft
+Nice=5
+# CPUQuota=80%
+# MemoryMax=2G
+
+[Install]
+WantedBy=multi-user.target

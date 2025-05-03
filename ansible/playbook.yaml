@@ -1,0 +1,21 @@
+- name: Setup Minecraft Bedrock Server
+  hosts: minecraft_servers
+  vars:
+    base_directory: "{{ ansible_env.HOME }}/mine-server"
+    server_version: 1.21.73.01
+    server_name: "server_heitor_guto"
+    server_port: 19132
+    game_mode: "survival"
+    game_difficulty: "hard"
+    world_name: "Mundo do Heitor e Augusto"
+    override_old_installation: true
+  roles:
+    - install-mine-server
+
+- name: Run server (yey!)
+  hosts: minecraft_servers
+  become: true
+  vars:
+    base_directory: "{{ ansible_env.HOME }}/mine-server"
+  roles:
+    - run-mine-server
