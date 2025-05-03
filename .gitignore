@@ -1,3 +1,4 @@
-src/
-vm/.vagrantfile
-test_server/env/
+*.tfvar
+*terraform.*
+*.terraform*
+*.tfvars
